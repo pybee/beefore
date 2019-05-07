@@ -1,6 +1,6 @@
-.. image:: http://pybee.org/project/projects/tools/beefore/beefore.png
+.. image:: https://beeware.org/project/projects/tools/beefore/beefore.png
     :width: 72px
-    :target: https://pybee.org/beefore
+    :target: https://beeware.org/beefore
 
 Beefore
 =======
