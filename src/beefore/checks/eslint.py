@@ -13,7 +13,7 @@ from beefore import diff
 
 
 __name__ = 'ESLint'
-LINT_OUTPUT = re.compile('(.*?): line (\d+), col (\d+), (.*?) - (.*) \((.*)\)')
+LINT_OUTPUT = re.compile(r'(.*?): line (\d+), col (\d+), (.*?) - (.*) \((.*)\)')
 
 
 class Lint:
@@ -70,9 +70,9 @@ class Lint:
         return problems
 
 
-SIMPLE_COMMENT = re.compile('//.*')
-MULTILINE_COMMENT = re.compile('/\*.*?\*/', re.DOTALL)
-SYMBOL_TO_STRING = re.compile('([a-zA-Z_][-\w_]*)\s*:')
+SIMPLE_COMMENT = re.compile(r'//.*')
+MULTILINE_COMMENT = re.compile(r'/\*.*?\*/', re.DOTALL)
+SYMBOL_TO_STRING = re.compile(r'([a-zA-Z_][-\w_]*)\s*:')
 
 
 def clean_json(raw):
@@ -108,7 +108,7 @@ def install_eslint_config(directory):
             print("Installing base ESLint configuration 'eslint-config-%s'..." % extends_name)
             proc = subprocess.Popen(['npm', 'install', 'eslint-config-%s' % extends_name])
             proc.wait()
-        except KeyError as e:
+        except KeyError:
             print("No base ESLint configuration specified.")
 
 

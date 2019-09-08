@@ -1,8 +1,8 @@
 import os
 import re
 
-FILE_START = re.compile("diff --git a/(.*) b/(.*)")
-LINE_RANGE = re.compile("@@ -(\d+),(\d+) \+(\d+),(\d+) @@")
+FILE_START = re.compile(r"diff --git a/(.*) b/(.*)")
+LINE_RANGE = re.compile(r"@@ -(\d+),(\d+) \+(\d+),(\d+) @@")
 
 
 def positions(directory, diff_content):

@@ -10,7 +10,6 @@ from . import github
 from . import local
 
 
-
 def main():
     "Perform pre-merge checks for a project"
     parser = ArgumentParser()
@@ -19,7 +18,7 @@ def main():
     parser.add_argument('--verbosity', '-v', dest='verbosity', action='count')
 
     # GitHub required arguments...
-    username_arg = parser.add_argument(
+    parser.add_argument(
         '--username', '-u', dest='username',
         help='The GitHub username to use when updating the project.'
     )
@@ -27,7 +26,7 @@ def main():
         '--repository', '-r', dest='repo_path',
         help='The name of the repository that contains the pull request.'
     )
-    commit_arg = parser.add_argument(
+    parser.add_argument(
         '--commit=', '-c', dest='sha',
         help='The hash of the commit to be checked.'
     )
@@ -89,7 +88,7 @@ def main():
 
         try:
             options.password = os.environ['GITHUB_ACCESS_TOKEN']
-        except KeyError as e:
+        except KeyError:
             print("GITHUB_ACCESS_TOKEN not found")
             sys.exit(1)
 
