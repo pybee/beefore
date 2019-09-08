@@ -22,13 +22,12 @@ jobs:
     - name: Run Beefore checks
       env:
         GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PR_SHA: $(cut -d' ' -f3 <<< $(git rev-list --parents -n 1 HEAD))
       run: |
         echo $(git rev-parse HEAD^)
         echo ${{ github.sha }}
         echo ${{ github.head_ref }}
-        echo $PR_SHA
-        beefore --username brutusthebee --repository ${{ github.repository }} --pull-request $(cut -d'/' -f3 <<< ${{ github.ref }}) --commit $PR_SHA ${{ matrix.task }} .
+        echo $(cut -d' ' -f3 <<< $(git rev-list --parents -n 1 HEAD))
+        beefore --username brutusthebee --repository ${{ github.repository }} --pull-request $(cut -d'/' -f3 <<< ${{ github.ref }}) --commit $(cut -d' ' -f3 <<< $(git rev-list --parents -n 1 HEAD)) ${{ matrix.task }} .
 
   smoke:
     name: Smoke test
