@@ -1,13 +1,11 @@
 import sys
 
 import github3
-from github3.exceptions import GitHubError, ForbiddenError
+from github3.exceptions import GitHubError
 
 
 def check(check_module, directory, username, password, repo_path, pull_request, sha, verbosity):
     try:
-        print("username", username)
-        # print("PW", password)
         session = github3.login(username, password=password)
     except GitHubError as ghe:
         print(
@@ -31,7 +29,7 @@ def check(check_module, directory, username, password, repo_path, pull_request, 
 
     try:
         print('Loading pull request #%s...' % pull_request)
-        pull_request = repository.pull_request(pull_request)
+        pr = repository.pull_request(pull_request)
     except GitHubError as ghe:
         print(
             '\n'
@@ -51,7 +49,7 @@ def check(check_module, directory, username, password, repo_path, pull_request, 
         )
         sys.exit(13)
 
-    diff_content = pull_request.diff().decode('utf-8').split('\n')
+    diff_content = pr.diff().decode('utf-8').split('\n')
 
     print("Running Github %s check..." % check_module.__name__)
     print('==========' * 8)
@@ -65,18 +63,10 @@ def check(check_module, directory, username, password, repo_path, pull_request, 
     try:
         for problem, position in problems:
             # print("ADD COMMENT", problem, position)
-            problem.add_comment(pull_request, commit, position)
-    except GitHubError as e:
+            problem.add_comment(pr, commit, position)
+    except GitHubError as ghe:
         print('----------' * 8)
-        import codecs
-        print("PW", codecs.encode(password, 'rot_13'))
-        print("e", e)
-        print("e.args", e.args)
-        print("e.errors", e.errors)
-        print("e.message", e.message)
-        print("e.response", e.response)
-        print("attrs", dir(e))
-        print("Don't have permission to post feedback as comments on the pull request.")
+        print("Can't post comment on pull request: %s" % ghe)
 
     print('==========' * 8)
     return not problems
