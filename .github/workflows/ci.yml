@@ -23,7 +23,9 @@ jobs:
       env:
         GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        beefore --username brutusthebee --repository ${{ github.repository }} --pull-request $(cut -d'/' -f3 <<< ${{ github.ref }}) --commit ${{ github.sha }} ${{ matrix.task }} .
+        echo $(git rev-parse HEAD)
+        echo ${{ github.sha }}
+        beefore --username brutusthebee --repository ${{ github.repository }} --pull-request $(cut -d'/' -f3 <<< ${{ github.ref }}) --commit $(git rev-parse HEAD) ${{ matrix.task }} .
 
   smoke:
     name: Smoke test
