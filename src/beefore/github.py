@@ -6,17 +6,7 @@ from github3.exceptions import GitHubError, ForbiddenError
 
 def check(check_module, directory, username, password, repo_path, pull_request, sha, verbosity):
     try:
-        # If a username is provided, log in using that username.
-        # Otherwise, log in via token.
-        if username:
-            print("logging in via username")
-            session = github3.login(username, password=password)
-        else:
-            print("logging in via token")
-            session = github3.login(token=password)
-            print("authorize brutus...")
-            session.authorization('brutusthebee')
-        print("Session: ", type(session), session)
+        session = github3.login(username, password=password)
     except GitHubError as ghe:
         print(
             '\n'
@@ -76,6 +66,9 @@ def check(check_module, directory, username, password, repo_path, pull_request, 
             problem.add_comment(pull_request, commit, position)
     except ForbiddenError:
         print('----------' * 8)
+        print("PW", password)
+        print("e", e)
+        print("attrs", dir(e))
         print("Don't have permission to post feedback as comments on the pull request.")
 
     print('==========' * 8)
