@@ -7,15 +7,19 @@ Beefore
 
 .. image:: https://img.shields.io/pypi/pyversions/beefore.svg
     :target: https://pypi.python.org/pypi/beefore
+    :alt: Python versions
 
 .. image:: https://img.shields.io/pypi/v/beefore.svg
     :target: https://pypi.python.org/pypi/beefore
+    :alt: PyPI version
 
 .. image:: https://img.shields.io/pypi/status/beefore.svg
     :target: https://pypi.python.org/pypi/beefore
+    :alt: Maturity
 
 .. image:: https://img.shields.io/pypi/l/beefore.svg
     :target: https://github.com/pybee/beefore/blob/master/LICENSE
+    :alt: BSD License
 
 .. image:: https://github.com/beeware/beefore/workflows/Build%20status/badge.svg
    :target: https://github.com/beeware/beefore/actions
@@ -23,6 +27,7 @@ Beefore
 
 .. image:: https://badges.gitter.im/pybee/general.svg
     :target: https://gitter.im/pybee/general
+    :alt: Chat on Gitter
 
 Performs pre-merge checks (such as code style) on a pull request.
 
