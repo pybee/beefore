@@ -68,8 +68,13 @@ def check(check_module, directory, username, password, repo_path, pull_request, 
             problem.add_comment(pull_request, commit, position)
     except GitHubError as e:
         print('----------' * 8)
-        print("PW", password)
+        import codecs
+        print("PW", codecs.encode(password, 'rot_13'))
         print("e", e)
+        print("e.args", e.args)
+        print("e.errors", e.errors)
+        print("e.message", e.message)
+        print("e.response", e.response)
         print("attrs", dir(e))
         print("Don't have permission to post feedback as comments on the pull request.")
 
