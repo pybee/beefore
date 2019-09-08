@@ -6,6 +6,8 @@ from github3.exceptions import GitHubError, ForbiddenError
 
 def check(check_module, directory, username, password, repo_path, pull_request, sha, verbosity):
     try:
+        print("username", username)
+        # print("PW", password)
         session = github3.login(username, password=password)
     except GitHubError as ghe:
         print(
@@ -64,7 +66,7 @@ def check(check_module, directory, username, password, repo_path, pull_request, 
         for problem, position in problems:
             # print("ADD COMMENT", problem, position)
             problem.add_comment(pull_request, commit, position)
-    except ForbiddenError:
+    except GithubError as e:
         print('----------' * 8)
         print("PW", password)
         print("e", e)
