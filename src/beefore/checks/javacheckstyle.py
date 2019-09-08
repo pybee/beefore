@@ -7,7 +7,6 @@ import subprocess
 
 from beefore import diff
 
-
 __name__ = 'Java CheckStyle'
 LINT_OUTPUT = re.compile(r"\[checkstyle\] \[(ERROR)\] (.*?):(\d+):(?:\d+:)? (.*) \[(.*)\]")
 

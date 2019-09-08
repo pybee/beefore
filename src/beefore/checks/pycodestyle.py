@@ -7,7 +7,6 @@ import subprocess
 
 from beefore import diff
 
-
 __name__ = 'PyCodeStyle'
 
 

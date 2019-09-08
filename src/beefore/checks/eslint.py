@@ -11,7 +11,6 @@ import yaml
 
 from beefore import diff
 
-
 __name__ = 'ESLint'
 LINT_OUTPUT = re.compile(r'(.*?): line (\d+), col (\d+), (.*?) - (.*) \((.*)\)')
 

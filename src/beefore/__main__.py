@@ -1,13 +1,13 @@
-from argparse import ArgumentParser
 import importlib
 import os
 import sys
+from argparse import ArgumentParser
 
 import git
 
 from beefore import __version__
-from . import github
-from . import local
+
+from . import github, local
 
 
 def main():
