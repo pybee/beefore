@@ -66,7 +66,7 @@ def check(check_module, directory, username, password, repo_path, pull_request, 
         for problem, position in problems:
             # print("ADD COMMENT", problem, position)
             problem.add_comment(pull_request, commit, position)
-    except GithubError as e:
+    except GitHubError as e:
         print('----------' * 8)
         print("PW", password)
         print("e", e)
