@@ -7,9 +7,10 @@ import subprocess
 
 from beefore import diff
 
-
-__name__ = 'Java CheckStyle'
-LINT_OUTPUT = re.compile("\[checkstyle\] \[(ERROR)\] (.*?):(\d+):(?:\d+:)? (.*) \[(.*)\]")
+__name__ = "Java CheckStyle"
+LINT_OUTPUT = re.compile(
+    r"\[checkstyle\] \[(ERROR)\] (.*?):(\d+):(?:\d+:)? (.*) \[(.*)\]"
+)
 
 
 class Lint:
@@ -20,15 +21,13 @@ class Lint:
         self.description = description
 
     def __str__(self):
-        return 'Line %s: [%s] %s' % (self.line, self.code, self.description)
+        return "Line %s: [%s] %s" % (self.line, self.code, self.description)
 
     def add_comment(self, pull_request, commit, position):
         pull_request.create_review_comment(
             # body="At column %(col)d: [(%(code)s) %(description)s](http://.../%(code)s)" % {
-            body="[%(code)s] %(description)s" % {
-                'code': self.code,
-                'description': self.description
-            },
+            body="[%(code)s] %(description)s"
+            % {"code": self.code, "description": self.description},
             commit_id=commit.sha,
             path=self.filename,
             position=position,
@@ -37,23 +36,25 @@ class Lint:
     @staticmethod
     def find(directory):
         proc = subprocess.Popen(
-            ['ant', 'checkstyle'],
+            ["ant", "checkstyle"],
             cwd=directory,
             stdin=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            stdout=subprocess.PIPE
+            stdout=subprocess.PIPE,
         )
         out, err = proc.communicate()
 
-        matches = LINT_OUTPUT.findall(err.decode('utf-8'))
+        matches = LINT_OUTPUT.findall(err.decode("utf-8"))
         problems = {}
         for severity, filename, line, description, code in matches:
-            problems.setdefault(filename, []).append(Lint(
-                filename=filename,
-                line=int(line),
-                code=code,
-                description=description,
-            ))
+            problems.setdefault(filename, []).append(
+                Lint(
+                    filename=filename,
+                    line=int(line),
+                    code=code,
+                    description=description,
+                )
+            )
 
         return problems
 
@@ -77,7 +78,7 @@ def check(directory, diff_content, commit, verbosity):
                     if not file_seen:
                         print("  * %s" % filename)
                         file_seen = True
-                    print('    - %s' % problem)
+                    print("    - %s" % problem)
                     results.append((problem, position))
                 except KeyError:
                     # Line doesn't exist in the diff; so we can ignore this problem
@@ -85,13 +86,13 @@ def check(directory, diff_content, commit, verbosity):
                         if not file_seen:
                             print("  * %s" % filename)
                             file_seen = True
-                        print('    - Line %s not in diff' % problem.line)
+                        print("    - Line %s not in diff" % problem.line)
         else:
             # File has been changed, but wasn't in the diff
             if verbosity:
                 if not file_seen:
                     print("  * %s" % filename)
                     file_seen = True
-                print('    - file not in diff')
+                print("    - file not in diff")
 
     return results

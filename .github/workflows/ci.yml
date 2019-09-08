@@ -22,8 +22,6 @@ jobs:
       env:
         GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        echo REF ${{ github.ref }}
-        echo PR $(cut -d'/' -f3 <<< ${{ github.ref }})
         beefore --username brutusthebee --repository ${{ github.repository }} --pull-request $(cut -d'/' -f3 <<< ${{ github.ref }}) --commit ${{ github.sha }} ${{ matrix.task }} .
 
   smoke:

@@ -4,7 +4,6 @@ from beefore import diff
 
 
 class TestDiff(unittest.TestCase):
-
     def test_add_lines(self):
         diff_content = [
             "diff --git a/tests/path/to/testfile b/tests/path/to/testfile",
@@ -14,14 +13,12 @@ class TestDiff(unittest.TestCase):
             "+3",
             " 4",
             " 5",
-            " 6"
+            " 6",
         ]
 
         self.assertEqual(
-            diff.positions('tests', diff_content),
-            {
-                "path/to/testfile": {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}
-            }
+            diff.positions("tests", diff_content),
+            {"path/to/testfile": {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}},
         )
 
     def test_subtract_lines(self):
@@ -31,14 +28,11 @@ class TestDiff(unittest.TestCase):
             " 1",
             "-2",
             "-3",
-            " 4"
+            " 4",
         ]
 
         self.assertEqual(
-            diff.positions('tests', diff_content),
-            {
-                "path/to/testfile": {1: 1, 2: 4}
-            }
+            diff.positions("tests", diff_content), {"path/to/testfile": {1: 1, 2: 4}}
         )
 
     def test_add_subtract(self):
@@ -58,28 +52,18 @@ class TestDiff(unittest.TestCase):
             "+7",
             " 8",
             "-9",
-            "+10"
+            "+10",
         ]
 
         self.assertEqual(
-            diff.positions('tests', diff_content),
-            {
-                "path/to/testfile": {2: 1, 3: 2, 4: 3, 14: 5, 15: 8, 16: 9, 17: 11}
-            }
+            diff.positions("tests", diff_content),
+            {"path/to/testfile": {2: 1, 3: 2, 4: 3, 14: 5, 15: 8, 16: 9, 17: 11}},
         )
 
     def test_no_diff(self):
-        diff_content = [
-            "1",
-            "2",
-            "3",
-            "4"
-        ]
+        diff_content = ["1", "2", "3", "4"]
 
-        self.assertEqual(
-            diff.positions('tests', diff_content),
-            {}
-        )
+        self.assertEqual(diff.positions("tests", diff_content), {})
 
     def test_multi_file(self):
         diff_content = [
@@ -114,13 +98,13 @@ class TestDiff(unittest.TestCase):
             "+7",
             " 8",
             "-9",
-            "+10"
+            "+10",
         ]
 
         self.assertEqual(
-            diff.positions('tests', diff_content),
+            diff.positions("tests", diff_content),
             {
                 "path/to/testfile": {2: 1, 3: 2, 4: 3, 14: 5, 15: 8, 16: 9, 17: 11},
                 "path/to/secondfile": {2: 1, 3: 2, 4: 3, 14: 5, 15: 8, 16: 9, 17: 11},
-            }
+            },
         )

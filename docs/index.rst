@@ -20,15 +20,15 @@ DCO
 Check for the existence of a Developer Certificate of Origin in the commit.
 A DCO is a legally binding statement that asserts that you are the creator of
 your contribution, and that you wish to allow BeeWare to use your work.
-For more details see 
+For more details see
 https://pybee.org/contributing/how/dco/
 
 
-Python Checks 
+Python Checks
 -------------
 
 For checking style on python code `flake8`_
-is the tool that is used. 
+is the tool that is used.
 
 The only exception to the pep8 standards that are applied by flake8 is the allowing
 of up to 199 character. Further information about this and what else is expected
@@ -78,5 +78,3 @@ Beefore is part of the `BeeWare suite`_. You can talk to the community through:
 .. _Read The Docs: https://toga.readthedocs.io
 .. _@pybeeware on Twitter: https://twitter.com/pybeeware
 .. _pybee/general on Gitter: https://gitter.im/pybee/general
-
-

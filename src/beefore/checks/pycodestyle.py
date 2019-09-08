@@ -7,8 +7,7 @@ import subprocess
 
 from beefore import diff
 
-
-__name__ = 'PyCodeStyle'
+__name__ = "PyCodeStyle"
 
 
 class Lint:
@@ -20,16 +19,18 @@ class Lint:
         self.description = description
 
     def __str__(self):
-        return 'Line %s, col %s: [%s] %s' % (self.line, self.col, self.code, self.description)
+        return "Line %s, col %s: [%s] %s" % (
+            self.line,
+            self.col,
+            self.code,
+            self.description,
+        )
 
     def add_comment(self, pull_request, commit, position):
         pull_request.create_review_comment(
             # body="At column %(col)d: [(%(code)s) %(description)s](http://.../%(code)s)" % {
-            body="At column %(col)d: (%(code)s) %(description)s" % {
-                'col': self.col,
-                'code': self.code,
-                'description': self.description
-            },
+            body="At column %(col)d: (%(code)s) %(description)s"
+            % {"col": self.col, "code": self.code, "description": self.description},
             commit_id=commit.sha,
             path=self.filename,
             position=position,
@@ -39,27 +40,26 @@ class Lint:
     def find(directory):
         directory = os.path.abspath(directory)
         proc = subprocess.Popen(
-            ['flake8'],
-            cwd=directory,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE
+            ["flake8"], cwd=directory, stdin=subprocess.PIPE, stdout=subprocess.PIPE
         )
         out, err = proc.communicate()
 
-        out_lines = [line for line in out.decode('utf-8').strip().split('\n') if line]
+        out_lines = [line for line in out.decode("utf-8").strip().split("\n") if line]
 
         problems = {}
         for problem in out_lines:
-            fname, line, col, remainder = problem.split(':', 3)
-            filename = os.path.abspath(fname)[len(directory)+1:]
-            code, description = remainder.strip().split(' ', 1)
-            problems.setdefault(filename, []).append(Lint(
-                filename=filename,
-                line=int(line),
-                col=int(col),
-                code=code,
-                description=description,
-            ))
+            fname, line, col, remainder = problem.split(":", 3)
+            filename = os.path.abspath(fname)[len(directory) + 1 :]
+            code, description = remainder.strip().split(" ", 1)
+            problems.setdefault(filename, []).append(
+                Lint(
+                    filename=filename,
+                    line=int(line),
+                    col=int(col),
+                    code=code,
+                    description=description,
+                )
+            )
 
         return problems
 
@@ -83,7 +83,7 @@ def check(directory, diff_content, commit, verbosity):
                     if not file_seen:
                         print("  * %s" % filename)
                         file_seen = True
-                    print('    - %s' % problem)
+                    print("    - %s" % problem)
                     results.append((problem, position))
                 except KeyError:
                     # Line doesn't exist in the diff; so we can ignore this problem
@@ -91,13 +91,13 @@ def check(directory, diff_content, commit, verbosity):
                         if not file_seen:
                             print("  * %s" % filename)
                             file_seen = True
-                        print('    - Line %s not in diff' % problem.line)
+                        print("    - Line %s not in diff" % problem.line)
         else:
             # File has been changed, but wasn't in the diff
             if verbosity:
                 if not file_seen:
                     print("  * %s" % filename)
                     file_seen = True
-                print('    - file not in diff')
+                print("    - file not in diff")
 
     return results

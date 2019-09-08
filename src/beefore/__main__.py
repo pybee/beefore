@@ -1,78 +1,83 @@
-from argparse import ArgumentParser
 import importlib
 import os
 import sys
+from argparse import ArgumentParser
 
 import git
 
 from beefore import __version__
-from . import github
-from . import local
+
+from . import github, local
 
 
 def main():
     "Perform pre-merge checks for a project"
     parser = ArgumentParser()
 
-    parser.add_argument('--version', action='version', version=__version__)
-    parser.add_argument('--verbosity', '-v', dest='verbosity', action='count')
+    parser.add_argument("--version", action="version", version=__version__)
+    parser.add_argument("--verbosity", "-v", dest="verbosity", action="count")
 
     # GitHub required arguments...
     username_arg = parser.add_argument(
-        '--username', '-u', dest='username',
-        help='The GitHub username to use when updating the project.'
+        "--username",
+        "-u",
+        dest="username",
+        help="The GitHub username to use when updating the project.",
     )
     repository_arg = parser.add_argument(
-        '--repository', '-r', dest='repo_path',
-        help='The name of the repository that contains the pull request.'
+        "--repository",
+        "-r",
+        dest="repo_path",
+        help="The name of the repository that contains the pull request.",
     )
-    commit_arg = parser.add_argument(
-        '--commit=', '-c', dest='sha',
-        help='The hash of the commit to be checked.'
+    parser.add_argument(
+        "--commit=", "-c", dest="sha", help="The hash of the commit to be checked."
     )
     pull_request_arg = parser.add_argument(
-        '--pull-request', '-p', dest='pull_request',
-        help='The pull request containing the commit.'
+        "--pull-request",
+        "-p",
+        dest="pull_request",
+        help="The pull request containing the commit.",
     )
 
     # local required arguments ...
     parser.add_argument(
-        '--branch', '-b', dest='branch', default='master',
-        help='The branch to compare against.'
+        "--branch",
+        "-b",
+        dest="branch",
+        default="master",
+        help="The branch to compare against.",
     )
 
     # Common arguments
+    parser.add_argument("check", metavar="check", help="Premerge check to run.")
     parser.add_argument(
-        'check', metavar='check',
-        help='Premerge check to run.')
-    parser.add_argument(
-        'directory', nargs='?', default='.',
-        help='Path to directory containing code to check.')
+        "directory",
+        nargs="?",
+        default=".",
+        help="Path to directory containing code to check.",
+    )
 
     options = parser.parse_args()
 
     # Load the check module
     try:
-        if '.' in options.check:
+        if "." in options.check:
             module_name = options.check
         else:
-            module_name = 'beefore.checks.{}'.format(options.check)
+            module_name = "beefore.checks.{}".format(options.check)
 
         check_module = importlib.import_module(module_name)
     except ImportError:
-        print(
-            '\n'
-            "Unable to load check module '%s'" % options.check,
-            file=sys.stderr
-        )
+        print("\n" "Unable to load check module '%s'" % options.check, file=sys.stderr)
         sys.exit(20)
 
     # Load sensitive environment variables from a .env file
     try:
-        with open('.env') as envfile:
+        with open(".env") as envfile:
             for line in envfile:
-                if line.strip() and not line.startswith('#'):
-                    key, value = line.strip().split('=', 1)
+                if line.strip() and not line.startswith("#"):
+                    key, value = line.strip().split("=", 1)
                     os.environ.setdefault(key.strip(), value.strip())
     except FileNotFoundError:
         pass
@@ -88,8 +93,8 @@ def main():
         options = parser.parse_args()
 
         try:
-            options.password = os.environ['GITHUB_ACCESS_TOKEN']
-        except KeyError as e:
+            options.password = os.environ["GITHUB_ACCESS_TOKEN"]
+        except KeyError:
             print("GITHUB_ACCESS_TOKEN not found")
             sys.exit(1)
 
@@ -118,10 +123,7 @@ def main():
 
         except git.InvalidGitRepositoryError:
             # Directory isn't a local git checkout, and we don't have a SHA
-            print(
-                "%s: unable to find Git data" % options.check,
-                file=sys.err
-            )
+            print("%s: unable to find Git data" % options.check, file=sys.err)
             sys.exit(2)
 
     print()
@@ -133,5 +135,5 @@ def main():
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

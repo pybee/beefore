@@ -1,8 +1,8 @@
 import os
 import re
 
-FILE_START = re.compile("diff --git a/(.*) b/(.*)")
-LINE_RANGE = re.compile("@@ -(\d+),(\d+) \+(\d+),(\d+) @@")
+FILE_START = re.compile(r"diff --git a/(.*) b/(.*)")
+LINE_RANGE = re.compile(r"@@ -(\d+),(\d+) \+(\d+),(\d+) @@")
 
 
 def positions(directory, diff_content):
@@ -21,7 +21,7 @@ def positions(directory, diff_content):
         match = FILE_START.match(d)
         if match:
             current_file = {}
-            filename = os.path.abspath(match.group(2))[len(directory)+1:]
+            filename = os.path.abspath(match.group(2))[len(directory) + 1 :]
             mappings[filename] = current_file
 
             # Start of a new file; so reset the file andd block offsets.
@@ -41,11 +41,13 @@ def positions(directory, diff_content):
                     file_start = i
 
                 block_start = i + 1
-                block_offset = 1 if match.group(1) == '0' else 0
+                block_offset = 1 if match.group(1) == "0" else 0
             elif block_start and len(d) > 0:
-                if d[0] == '-':
+                if d[0] == "-":
                     block_offset += 1
                 else:
-                    current_file[i - block_start - block_offset + first_line] = i - file_start
+                    current_file[i - block_start - block_offset + first_line] = (
+                        i - file_start
+                    )
 
     return mappings

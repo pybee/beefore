@@ -8,12 +8,10 @@ import re
 import subprocess
 
 import yaml
-
 from beefore import diff
 
-
-__name__ = 'ESLint'
-LINT_OUTPUT = re.compile('(.*?): line (\d+), col (\d+), (.*?) - (.*) \((.*)\)')
+__name__ = "ESLint"
+LINT_OUTPUT = re.compile(r"(.*?): line (\d+), col (\d+), (.*?) - (.*) \((.*)\)")
 
 
 class Lint:
@@ -25,15 +23,17 @@ class Lint:
         self.description = description
 
     def __str__(self):
-        return 'Line %s, col %s: [%s] %s' % (self.line, self.col, self.code, self.description)
+        return "Line %s, col %s: [%s] %s" % (
+            self.line,
+            self.col,
+            self.code,
+            self.description,
+        )
 
     def add_comment(self, pull_request, commit, position):
         pull_request.create_review_comment(
-            body="At column %(col)d: [(%(code)s) %(description)s](http://eslint.org/docs/rules/%(code)s)" % {
-                'col': self.col,
-                'code': self.code,
-                'description': self.description
-            },
+            body="At column %(col)d: [(%(code)s) %(description)s](http://eslint.org/docs/rules/%(code)s)"
+            % {"col": self.col, "code": self.code, "description": self.description},
             commit_id=commit.sha,
             path=self.filename,
             position=position,
@@ -43,44 +43,41 @@ class Lint:
     def find(directory):
         directory = os.path.abspath(directory)
         proc = subprocess.Popen(
-            [
-                'npx',
-                'eslint',
-                '--format', 'compact',
-                '.',
-            ],
+            ["npx", "eslint", "--format", "compact", "."],
             cwd=directory,
             stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE
+            stdout=subprocess.PIPE,
         )
         out, err = proc.communicate()
 
-        matches = LINT_OUTPUT.findall(out.decode('utf-8'))
+        matches = LINT_OUTPUT.findall(out.decode("utf-8"))
         problems = {}
         for fname, line, col, level, description, code in matches:
-            filename = os.path.abspath(fname)[len(directory)+1:]
-            problems.setdefault(filename, []).append(Lint(
-                filename=filename,
-                line=int(line),
-                col=int(col),
-                code=code,
-                description=description,
-            ))
+            filename = os.path.abspath(fname)[len(directory) + 1 :]
+            problems.setdefault(filename, []).append(
+                Lint(
+                    filename=filename,
+                    line=int(line),
+                    col=int(col),
+                    code=code,
+                    description=description,
+                )
+            )
 
         return problems
 
 
-SIMPLE_COMMENT = re.compile('//.*')
-MULTILINE_COMMENT = re.compile('/\*.*?\*/', re.DOTALL)
-SYMBOL_TO_STRING = re.compile('([a-zA-Z_][-\w_]*)\s*:')
+SIMPLE_COMMENT = re.compile(r"//.*")
+MULTILINE_COMMENT = re.compile(r"/\*.*?\*/", re.DOTALL)
+SYMBOL_TO_STRING = re.compile(r"([a-zA-Z_][-\w_]*)\s*:")
 
 
 def clean_json(raw):
     # Replace  //-style comments
-    clean = SIMPLE_COMMENT.sub('', raw)
+    clean = SIMPLE_COMMENT.sub("", raw)
 
     # Replace  /* */-style comments
-    clean = MULTILINE_COMMENT.sub('', clean)
+    clean = MULTILINE_COMMENT.sub("", clean)
 
     # Replace unadorned foo: 42 with "foo": 42
     clean = SYMBOL_TO_STRING.sub('"\\1":', clean)
@@ -88,14 +85,14 @@ def clean_json(raw):
 
 
 def install_eslint_config(directory):
-    if os.path.isfile(os.path.join(directory, '.eslintrc')):
-        with open(os.path.join(directory, '.eslintrc')) as config_file:
+    if os.path.isfile(os.path.join(directory, ".eslintrc")):
+        with open(os.path.join(directory, ".eslintrc")) as config_file:
             config = json.loads(clean_json(config_file.read()))
-    elif os.path.isfile(os.path.join(directory, '.eslintrc.json')):
-        with open(os.path.join(directory, '.eslintrc.json')) as config_file:
+    elif os.path.isfile(os.path.join(directory, ".eslintrc.json")):
+        with open(os.path.join(directory, ".eslintrc.json")) as config_file:
             config = json.loads(clean_json(config_file.read()))
-    elif os.path.isfile(os.path.join(directory, '.eslintrc.yml')):
-        with open(os.path.join(directory, '.eslintrc.yml')) as config_file:
+    elif os.path.isfile(os.path.join(directory, ".eslintrc.yml")):
+        with open(os.path.join(directory, ".eslintrc.yml")) as config_file:
             config = yaml.load(config_file.read())
     else:
         config_file = None
@@ -104,11 +101,16 @@ def install_eslint_config(directory):
         print("No ESLint configuration file found.")
     else:
         try:
-            extends_name = config['extends']
-            print("Installing base ESLint configuration 'eslint-config-%s'..." % extends_name)
-            proc = subprocess.Popen(['npm', 'install', 'eslint-config-%s' % extends_name])
+            extends_name = config["extends"]
+            print(
+                "Installing base ESLint configuration 'eslint-config-%s'..."
+                % extends_name
+            )
+            proc = subprocess.Popen(
+                ["npm", "install", "eslint-config-%s" % extends_name]
+            )
             proc.wait()
-        except KeyError as e:
+        except KeyError:
             print("No base ESLint configuration specified.")
 
 
@@ -131,7 +133,7 @@ def check(directory, diff_content, commit, verbosity):
                     if not file_seen:
                         print("  * %s" % filename)
                         file_seen = True
-                    print('    - %s' % problem)
+                    print("    - %s" % problem)
                     results.append((problem, position))
                 except KeyError:
                     # Line doesn't exist in the diff; so we can ignore this problem
@@ -139,13 +141,13 @@ def check(directory, diff_content, commit, verbosity):
                         if not file_seen:
                             print("  * %s" % filename)
                             file_seen = True
-                        print('    - Line %s not in diff' % problem.line)
+                        print("    - Line %s not in diff" % problem.line)
         else:
             # File has been changed, but wasn't in the diff
             if verbosity:
                 if not file_seen:
                     print("  * %s" % filename)
                     file_seen = True
-                print('    - file not in diff')
+                print("    - file not in diff")
 
     return results
