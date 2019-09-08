@@ -10,6 +10,7 @@ from . import github
 from . import local
 
 
+
 def main():
     "Perform pre-merge checks for a project"
     parser = ArgumentParser()
