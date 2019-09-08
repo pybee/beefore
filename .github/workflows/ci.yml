@@ -17,12 +17,13 @@ jobs:
         python-version: 3.7
     - name: Install dependencies
       run: |
-        pip install --upgrade pip setuptools beefore
+        pip install --upgrade pip setuptools
+        pip install git+https://github.com/beeware/beefore.git@pr-comments
     - name: Run Beefore checks
       env:
         GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        beefore --username beeware --repository ${{ github.repository }} --pull-request $(cut -d'/' -f3 <<< ${{ github.ref }}) --commit ${{ github.sha }} ${{ matrix.task }} .
+        beefore --repository ${{ github.repository }} --pull-request $(cut -d'/' -f3 <<< ${{ github.ref }}) --commit ${{ github.sha }} ${{ matrix.task }} .
 
   smoke:
     name: Smoke test

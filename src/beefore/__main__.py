@@ -80,9 +80,8 @@ def main():
 
     if options.sha:
         # If a SHA has been provided, then use GitHub data, rather than
-        # any local git information. This also means username, repository,
-        # and pull_request are required, as well as a password in environment
-        username_arg.required = True
+        # any local git information. This also means repository and
+        # pull_request are required, as well as a password in environment
         repository_arg.required = True
         pull_request_arg.required = True
 

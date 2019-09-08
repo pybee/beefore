@@ -6,7 +6,15 @@ from github3.exceptions import GitHubError, ForbiddenError
 
 def check(check_module, directory, username, password, repo_path, pull_request, sha, verbosity):
     try:
-        session = github3.login(username, password=password)
+        # If a username is provided, log in using that username.
+        # Otherwise, log in via token.
+        if username:
+            print("logging in via username")
+            session = github3.login(username, password=password)
+        else:
+            print("logging in via token")
+            session = github3.login(token=password)
+        print("Session: ", type(session), session)
     except GitHubError as ghe:
         print(
             '\n'
