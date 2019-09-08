@@ -14,6 +14,8 @@ def check(check_module, directory, username, password, repo_path, pull_request, 
         else:
             print("logging in via token")
             session = github3.login(token=password)
+            print("authorize brutus...")
+            session.authorization('brutusthebee')
         print("Session: ", type(session), session)
     except GitHubError as ghe:
         print(
