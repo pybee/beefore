@@ -10,7 +10,6 @@ from beefore import __version__
 from . import github, local
 
 
-
 def main():
     "Perform pre-merge checks for a project"
     parser = ArgumentParser()
